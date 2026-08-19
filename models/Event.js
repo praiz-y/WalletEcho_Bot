@@ -23,23 +23,20 @@ const eventSchema = new mongoose.Schema({
   liquidity: { type: Number },
   fiveMinChange: { type: Number },
 
-  safetyCheck: { type: safetyCheckSchema },  // buy events only
-  isFullExit: { type: Boolean },             // sell events only
-  gainLossPct: { type: Number, default: null }, // sell events only, null if original buy wasn't captured
+  safetyCheck: { type: safetyCheckSchema },  
+  isFullExit: { type: Boolean },             
+  gainLossPct: { type: Number, default: null }, 
 
-  // Prevents the same on-chain event from being processed twice,
-  // even if Helius retries the webhook delivery.
+
   txSignature: { type: String, required: true, unique: true },
 
-  // Tracks where this event is in the pipeline, so a failure at one
-  // stage (e.g. Birdeye down) can be retried without redoing earlier stages.
   status: {
     type: String,
     enum: ['received', 'enriched', 'delivered', 'failed_enrichment', 'failed_delivery'],
     default: 'received',
   },
 
-  timestamp: { type: Date, required: true }, // when the swap actually happened on-chain
+  timestamp: { type: Date, required: true }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema);
