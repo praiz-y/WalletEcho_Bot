@@ -1,11 +1,19 @@
 // Load environment variables from .env into process.env
 require('dotenv').config();
+const connectDB = require('./db');
+connectDB();
+
+require('./bot');
+console.log('Telegram bot started (polling)');
 
 const express = require('express');
 const app = express();
 
 // Middleware to parse JSON bodies (needed later for the Helius webhook)
 app.use(express.json());
+
+const webhookRouter = require('./routes/webhook');
+app.use('/', webhookRouter);
 
 // Simple health check route.
 // This is what confirms the server is alive, and what the keep-alive
